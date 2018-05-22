@@ -1,0 +1,18 @@
+script#tpl(type='text/template')
+    |  {{ for(var i=0; i<name.length; i++) { }}
+    li(data-id='{{= id[i]}}' class='list') {{= name[i] }}
+    |  {{ } }}
+script#data(type='text/template')
+    label Nombre : {{=name}}
+    br
+    label Id : {{=id}}
+    br
+    label Descripcion : {{=descripcion}}
+    br
+    label Picture : 
+    br
+    img(src='{{=picture}}')
+script(src='public/static/js/dist/jquery/dist/jquery.min.js')
+script(src='public/static/js/dist/underscore/underscore.js')
+script(src='public/static/js/dist/yosonjs/dist/yoson.js')
+script(src='public/static/js/src/source.js')

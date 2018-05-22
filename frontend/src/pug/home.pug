@@ -1,0 +1,44 @@
+extends layout.pug
+
+block styles
+    link(rel='stylesheet', type='text/css', href='../css/home.css')
+    link(href='https://fonts.googleapis.com/css?family=Ubuntu', rel='stylesheet')
+
+block content
+    include partials/homePartials/form.pug
+    include partials/homePartials/info.pug 
+    include partials/homePartials/search.pug
+    include partials/homePartials/storageTable.pug
+
+block templates
+    script#tpl(type='text/template')
+        |  {{ for(var i=0; i<name.length; i++) { }}
+        li(data-id='{{= id[i]}}' class='list') {{= name[i] }}
+        |  {{ } }}
+    script#data(type='text/template')
+        label Nombre : {{=name}}
+        br
+        label Id : {{=id}}
+        br
+        label Descripcion : {{=descripcion}}
+        br
+        label Picture : 
+        br
+        img(src='{{=picture}}')
+    script#table(type='text/template')
+        tr
+            th Nombre
+            th Id
+            th Descripcion
+            th Opciones
+        |   {{ for(var i=0; i<data.length; i++){ }}
+        tr
+            td {{=data[i].name}}
+            td {{=data[i].id}}
+            td {{=data[i].description}}
+            td
+                button.btn_Delete(data-id='{{=data[i].id}}') Delete
+        |   {{ } }}
+
+block script
+    script(src='../js/dist/home.js')
