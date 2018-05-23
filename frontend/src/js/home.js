@@ -11,8 +11,7 @@ yOSON.AppCore.addModule('adder', function (Sb) {
         id: '#id',
         description: '#description',
         urlPicture: 'https://4aae76bac0e998c0806f-425f2f9f94637db78b7b534fb5acbdb3.ssl.cf1.rackcdn.com/2T3WFREV2JW437576/c2fb56d8e8302576fd4ac7741a6baf77.jpg',
-        btnRegisterNewData: '#btnRegister',
-        parents : {}
+        btnRegisterNewData: '#btnRegister'
     }
 
     var dom = {}
