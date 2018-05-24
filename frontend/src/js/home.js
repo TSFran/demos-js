@@ -6,7 +6,7 @@ _.templateSettings = {
 yOSON.AppCore.addModule('adder', function (Sb) {
     var st = {
         formRegister: '#myForm',
-        data: '.groupData',
+        data: '.group_data',
         name: '#name',
         id: '#id',
         description: '#description',
@@ -121,7 +121,7 @@ yOSON.AppCore.addModule('filter', function (Sb) {
         },
 
         showLoadOnRequest() {
-            dom.searchBox.addClass("input_Loading")
+            dom.searchBox.addClass("input_loading")
         },
 
         getRelatedBrands(data, q) {
@@ -171,7 +171,7 @@ yOSON.AppCore.addModule('filter', function (Sb) {
         },
 
         hideLoadOnRequest() {
-            dom.searchBox.removeClass("input_Loading")
+            dom.searchBox.removeClass("input_loading")
         },
 
         isEmpty() {
@@ -199,12 +199,12 @@ yOSON.AppCore.addModule('filter', function (Sb) {
 
 yOSON.AppCore.addModule('render', function(Sb) {
     var st = {
-        btnDelete: '.btn_Delete',
+        btnDelete: '.btn_delete',
         itemBox: '#txtResult',
         selectItem: '.list',
         resultTableByItem: '#myInfo',
         brands: [],
-        tableStorage: '.storageInfo'
+        tableStorage: '.storage_info'
     }
 
     var dom = {}
@@ -249,6 +249,7 @@ yOSON.AppCore.addModule('render', function(Sb) {
                 })
             $(st.tableStorage).html(htmlTable)
             fn.catchDomAsync()
+            Sb.trigger('Modal:view')
         },
 
         catchDomAsync(){
@@ -326,8 +327,77 @@ yOSON.AppCore.addModule('storage', function (Sb) {
     }
 })
 
+yOSON.AppCore.addModule('viewModal', function(Sb){
+    var st = {
+        btnViewModal: '.btn_view',
+        btnClose: '.close',
+        brandDescription : '#brandDescription'
+    }
+
+    var dom = {}
+    
+    var catchDom = () => {
+        dom.btnViewModal = $(st.btnViewModal)
+        dom.btnClose = $(st.btnClose)
+        dom.brandDescription = $(st.brandDescription)
+    }
+    
+    var suscribeEvents = () => {
+        dom.btnViewModal.on('click', events.clickViewDescriptionModal)
+        dom.btnClose.on('click', events.clickHideDescriptionModal)
+    }
+
+    var events = {
+        clickViewDescriptionModal(e) {
+            var ele = $(e.target)
+            var id = ele.data('id')
+            Sb.trigger('Storage:read', "dataBrands", function(data) {
+                var descriptionFound = fn.searchDescriptionById(data, id)
+                fn.renderDescriptionModal(descriptionFound) 
+            })
+            $('.modal').css('display','flex')
+        },
+
+        clickHideDescriptionModal() {
+            $('.modal').css('display', 'none')
+        }
+    }
+
+    var fn = {
+        aync() {
+            catchDom()
+            suscribeEvents()
+        },
+
+        searchDescriptionById(data, id) {
+            var dataFind = data.find(data => data.id == id)
+            return dataFind
+        },
+
+        renderDescriptionModal(descriptionFound) {
+            let htmlModal = _.template($("#modal").html(),
+                {
+                    data: descriptionFound
+                })
+            dom.brandDescription.html(htmlModal)
+        }
+    }
+
+    var initialize = () => {
+        catchDom()
+        suscribeEvents()
+        Sb.events(['Modal:view'], fn.aync, this)
+    }
+
+    return {
+        init : initialize
+    }
+})
+
+
 yOSON.AppCore.runModule('adder')
 yOSON.AppCore.runModule('filter')
 yOSON.AppCore.runModule('render')
 yOSON.AppCore.runModule('storage')
+yOSON.AppCore.runModule('viewModal')
 

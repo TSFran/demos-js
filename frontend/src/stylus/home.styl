@@ -2,9 +2,22 @@
 h1
     color green
 
+#main
+    display flex
+
+#admin
+    width 50%
+    display flex
+    flex-wrap wrap
+    justify-content center
+    align-items center
+
 #mainForm
-    width 30%
-    float left
+    width 50%
+    display flex
+    align-items center
+    justify-content center
+    flex-wrap wrap
 
 #myForm
     background-color #FFF
@@ -34,7 +47,7 @@ h1
     color #777
     width 90%
 
-.groupData
+.group_data
     margin-bottom 10px
     padding 5px
     label
@@ -47,7 +60,7 @@ button
     background-color #232324
     color white
     font-size 20px
-    margin 0px 100px
+    margin 0px 30px
     padding 5px
     border-radius 5px
     font-family 'Ubuntu', sans-serif
@@ -56,15 +69,38 @@ button
 
 button:hover
     background-color #6E6E6E
-#myInfo
-    width 40%
-    height 300px
-    margin-left 40%
+
+.storage_info
+    width 50%
+    border-collapse collapse
+    margin-top 20px
+
+.storage_info td
+.storage_info th
+    border 1px solid #ddd
+
+.storage_info tr:nth-child(even)
+    background-color: #F2F2F2
+
+//hover
+
+.storage_info th
+    padding-top 12px
+    padding-bottom 12px
+    text-align center
+    background-color #232324;
+    color white
+
+#client
+    width 50%
+    display flex
+    flex-wrap wrap
+    justify-content center
+    align-items center
 
 #mySearch
-    width 30%
+    width 50%
     height 200px
-    float left 
 
 #mySearch img
     width 5%
@@ -81,7 +117,7 @@ button:hover
     border none
     float left
 
-.input_Loading
+.input_loading
     background-repeat no-repeat
     background-position right
     background-image url("http://p.ebaystatic.com/aw/pics/globalAssets/imgLoading_30x30.gif")
@@ -96,24 +132,32 @@ button:hover
     list-style none
     cursor pointer
 
-.storageInfo
-    margin-left 40%
+#myInfo
+    width 70%
+    height 300px
+
+.modal
+    z-index : 1
+    top 0
+    left 0
+    position fixed
+    width 100%
+    height 100%
+    background-color rgba(0,0,0,0.4)
+    display none
+    justify-content center
+    align-items center
+
+.modal_Content
     width 40%
-    border-collapse collapse
-    margin-bottom 20px
+    padding 10px
+    background-color white
+    box-sizing border-box
 
-.storageInfo td
-.storageInfo th
-    border 1px solid #ddd
+.close
+    float right
+    font-size 30px
 
-.storageInfo tr:nth-child(even)
-    background-color: #F2F2F2
-
-//hover
-
-.storageInfo th
-    padding-top 12px
-    padding-bottom 12px
-    text-align center
-    background-color #232324;
-    color white
+.close:hover
+    color #848484
+    cursor pointer

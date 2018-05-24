@@ -5,10 +5,15 @@ block styles
     link(href='https://fonts.googleapis.com/css?family=Ubuntu', rel='stylesheet')
 
 block content
-    include partials/homePartials/form.pug
-    include partials/homePartials/info.pug 
-    include partials/homePartials/search.pug
-    include partials/homePartials/storageTable.pug
+    section#main
+        section#admin
+            include partials/homePartials/form.pug
+            include partials/homePartials/storageTable.pug
+        section#client 
+            include partials/homePartials/search.pug
+            include partials/homePartials/info.pug
+        include partials/homePartials/modal.pug
+            
 
 block templates
     script#tpl(type='text/template')
@@ -27,18 +32,19 @@ block templates
         img(src='{{=picture}}')
     script#table(type='text/template')
         tr
-            th Nombre
             th Id
-            th Descripcion
+            th Nombre
             th Opciones
         |   {{ for(var i=0; i<data.length; i++){ }}
         tr
-            td {{=data[i].name}}
             td {{=data[i].id}}
-            td {{=data[i].description}}
+            td {{=data[i].name}}
             td
-                button.btn_Delete(data-id='{{=data[i].id}}') Delete
+                button.btn_delete(data-id='{{=data[i].id}}') Delete
+                button.btn_view(data-id='{{=data[i].id}}') View
         |   {{ } }}
+    script#modal(type='text/template')
+        p {{=data.description}}
 
 block script
-    script(src='../js/dist/home.js')
+    script(src='../js/dist/backhome.js')

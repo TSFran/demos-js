@@ -3,25 +3,26 @@ _.templateSettings = {
     interpolate: /\{\{=([\s\S]+?)\}\}/g
 };
 
-yOSON.AppCore.addModule('adder', function(Sb) {
+yOSON.AppCore.addModule('adder', function (Sb) {
     var st = {
-        formRegister : '#myForm',
-        newData : '.groupData',
-        newName : '#name',
-        newId : '#id',
-        newDescription : '#description',
+        formRegister: '#myForm',
+        data: '.group_data',
+        name: '#name',
+        id: '#id',
+        description: '#description',
         urlPicture: 'https://4aae76bac0e998c0806f-425f2f9f94637db78b7b534fb5acbdb3.ssl.cf1.rackcdn.com/2T3WFREV2JW437576/c2fb56d8e8302576fd4ac7741a6baf77.jpg',
-        btnRegisterNewData : '#btnRegister'
+        btnRegisterNewData: '#btnRegister'
     }
 
     var dom = {}
 
     var catchDom = () => {
-        dom.newData = $(st.newData)
-        dom.newName = $(st.newName, dom.newData)
-        dom.newId = $(st.newId, dom.newData)
-        dom.newDescription = $(st.newDescription, dom.newData)
-        dom.btnRegisterNewData = $(st.btnRegisterNewData, st.formRegister)
+        dom.formRegister=$(st.formRegister)
+        dom.data = $(st.data)
+        dom.name = $(st.name, dom.data)
+        dom.id = $(st.id, dom.data)
+        dom.description = $(st.description, dom.data)
+        dom.btnRegisterNewData = $(st.btnRegisterNewData, dom.formRegister)
     }
 
     var suscribeEvents = () => {
@@ -29,7 +30,7 @@ yOSON.AppCore.addModule('adder', function(Sb) {
     }
 
     var events = {
-        clickRegisterNewData(){
+        clickRegisterNewData() {
             var brandsReceived = {}
             fn.addData(brandsReceived)
         }
@@ -39,30 +40,28 @@ yOSON.AppCore.addModule('adder', function(Sb) {
         addData(brandsReceived) {
             var elements = fn.searchInputElement()
             var brandsCollected = fn.getData(elements, brandsReceived)
-            var newBrands = fn.pushData(brandsCollected)
+            var newBrands = fn.setData(brandsCollected)
             fn.cleanData(brandsCollected)
         },
 
         searchInputElement() {
-            return {
-                eleFound : dom.newData.find(':input')
-            }
+            return dom.data.find(':input')
         },
 
         getData(elements, brandsReceived) {
-            elements.eleFound.each(function(i, input) {
-                brandsReceived['name'] = dom.newName.val()
+            elements.each(function (i, input) {
+                brandsReceived['name'] = dom.name.val()
                 brandsReceived['id'] = Date.now()
-                brandsReceived['description'] = dom.newDescription.val()
+                brandsReceived['description'] = dom.description.val()
                 brandsReceived['picture'] = st.urlPicture
             })
 
             return {
-                brandsReceived : brandsReceived
+                brandsReceived: brandsReceived
             }
         },
 
-        pushData(brandsCollected) {
+        setData(brandsCollected) {
             Sb.trigger('Storage:create', "dataBrands", brandsCollected.brandsReceived)
             Sb.trigger('Render:renderBrandsStored')
         },
@@ -78,23 +77,24 @@ yOSON.AppCore.addModule('adder', function(Sb) {
     }
 
     return {
-        init : initialize
+        init: initialize
     }
 })
 
-yOSON.AppCore.addModule('filter', function(Sb) {
+yOSON.AppCore.addModule('filter', function (Sb) {
     var st = {
-        searchContainer : '#mySearch',
-        searchBox : '#txtSearch',
-        itemBox : '#txtResult',
-        brands : []
+        searchContainer: '#mySearch',
+        searchBox: '#txtSearch',
+        itemBox: '#txtResult',
+        brands: []
     }
 
     var dom = {}
 
     var catchDom = () => {
-        dom.searchBox = $(st.searchBox, st.searchContainer)
-        dom.itemBox = $(st.itemBox, st.searchContainer)
+        dom.searchContainer = $(st.searchContainer)
+        dom.searchBox = $(st.searchBox, dom.searchContainer)
+        dom.itemBox = $(st.itemBox, dom.searchContainer)
     }
 
     var suscribeEvents = () => {
@@ -123,17 +123,17 @@ yOSON.AppCore.addModule('filter', function(Sb) {
         },
 
         showLoadOnRequest() {
-            dom.searchBox.addClass("input_Loading")
+            dom.searchBox.addClass("input_loading")
         },
 
         getRelatedBrands(data, q) {
-            fn.searchRelatedBrands(data, q)
+            fn.filterBrands(data, q)
             fn.showBrandsFound()
             fn.hideLoadOnRequest()
-            fn.validateSearchContent()
+            fn.isEmpty()
         },
 
-        searchRelatedBrands(data, q) {
+        filterBrands(data, q) {
             var words = []
             var wordsFound = []
             words = fn.filterByWords(data, q)
@@ -143,6 +143,7 @@ yOSON.AppCore.addModule('filter', function(Sb) {
 
         filterByWords(data, q) {
             var filterWords = data.filter(brands => brands.name.toLowerCase().includes(q))
+
             return filterWords
         },
 
@@ -151,8 +152,8 @@ yOSON.AppCore.addModule('filter', function(Sb) {
             var id = words.map(brands => brands.id)
 
             return {
-                name : name,
-                id : id
+                name: name,
+                id: id
             }
         },
 
@@ -172,17 +173,17 @@ yOSON.AppCore.addModule('filter', function(Sb) {
         },
 
         hideLoadOnRequest() {
-            dom.searchBox.removeClass("input_Loading")
+            dom.searchBox.removeClass("input_loading")
         },
 
-        validateSearchContent() {
+        isEmpty() {
             if (dom.searchBox.val() === "") {
                 dom.itemBox.empty()
-                fn.HideBrandsNotFound()
+                fn.hideBrandsNotFound()
             }
         },
 
-        HideBrandsNotFound() {
+        hideBrandsNotFound() {
             dom.itemBox.slideUp("slow")
         }
     }
@@ -194,44 +195,87 @@ yOSON.AppCore.addModule('filter', function(Sb) {
     }
 
     return {
-        init : initialize
+        init: initialize
     }
 })
 
-yOSON.AppCore.addModule('render', function(Sb){
+yOSON.AppCore.addModule('render', function (Sb) {
     var st = {
-        itemBox : '#txtResult',
-        selectItem : '.list',
-        resultTableByItem : '#myInfo',
-        brands : {},
-        tableStorage: '.storageInfo'
+        btnDelete: '.btn_delete',
+        itemBox: '#txtResult',
+        selectItem: '.list',
+        resultTableByItem: '#myInfo',
+        brands: [],
+        tableStorage: '.storage_info',
+        btnViewModal: '.btn_view',
+        btnClose: '.close',
+        brandDescription: '#brandDescription'
     }
 
     var dom = {}
 
     var catchDom = () => {
-        dom.selectItem = $(st.selectItem, st.itemBox)
-        dom.resultTableByItem = $(st.resultTableByItem)
+        dom.tableStorage = $(st.tableStorage)
+        dom.btnDelete = $(st.btnDelete)
         dom.itemBox = $(st.itemBox)
+        dom.selectItem = $(st.selectItem, dom.itemBox)
+        dom.resultTableByItem = $(st.resultTableByItem)
+        dom.btnViewModal = $(st.btnViewModal)
+        dom.btnClose = $(st.btnClose)
+        dom.brandDescription = $(st.brandDescription)
     }
 
     var suscribeEvents = () => {
+        dom.btnDelete.on('click', events.clickEraseStorageData)
         dom.selectItem.on('click', events.clickShowBrandsInfoFound)
+        dom.btnViewModal.on('click', events.clickViewDescriptionModal)
+        dom.btnClose.on('click', events.clickHideDescriptionModal)
     }
 
     var events = {
+        clickEraseStorageData(e) {
+            var ele = $(e.target)
+            var id = ele.data("id")
+            Sb.trigger('Storage:erase', "dataBrands", id)
+            fn.renderBrandsStored()
+        },
+
         clickShowBrandsInfoFound(e) {
-            Sb.trigger('Filter:getBrands', function(brands) {
+            Sb.trigger('Filter:getBrands', function (brands) {
                 st.brands = brands
             })
             var ele = $(e.target)
             var id = ele.data("id")
             fn.filterBrandsById(id)
-            fn.HideBrandsNotFound()
+            fn.hideBrandsNotFound()
+        },
+
+        clickViewDescriptionModal(e) {
+            var ele = $(e.target)
+            var id = ele.data('id')
+            Sb.trigger('Storage:read', "dataBrands", function (data) {
+                var descriptionFound = fn.searchDescriptionById(data, id)
+                fn.renderDescriptionModal(descriptionFound)
+            })
+            $('.modal').css('display', 'flex')
+        },
+
+        clickHideDescriptionModal() {
+            $('.modal').css('display', 'none')
         }
     }
 
     var fn = {
+        renderBrandsStored() {
+            var data = JSON.parse(localStorage.getItem("dataBrands"))
+            let htmlTable = _.template($("#table").html(),
+                {
+                    data: data
+                })
+            $(st.tableStorage).html(htmlTable)
+            fn.catchDomAsync()
+        },
+
         catchDomAsync() {
             catchDom()
             suscribeEvents()
@@ -239,7 +283,7 @@ yOSON.AppCore.addModule('render', function(Sb){
 
         filterBrandsById(id) {
             var brands = st.brands
-            var filteredBrands = brands.filter(brands => brands.id==id)
+            var filteredBrands = brands.filter(brands => brands.id == id)
             fn.renderBrandsFound(filteredBrands)
         },
 
@@ -254,21 +298,24 @@ yOSON.AppCore.addModule('render', function(Sb){
             dom.resultTableByItem.html(html)
         },
 
-        HideBrandsNotFound() {
+        hideBrandsNotFound() {
             dom.itemBox.slideUp("slow")
         },
 
-        renderBrandsStored() {
-            var data = JSON.parse(localStorage.getItem("dataBrands"))
-            let htmlTable = _.template($("#table").html(),
+        searchDescriptionById(data, id) {
+            var dataFind = data.find(data => data.id == id)
+            return dataFind
+        },
+
+        renderDescriptionModal(descriptionFound) {
+            let htmlModal = _.template($("#modal").html(),
                 {
-                    data: data
+                    data: descriptionFound
                 })
-            $(st.tableStorage).html(htmlTable)
-            Sb.trigger('Eraser:eraseStorage')
+            dom.brandDescription.html(htmlModal)
         }
     }
-    
+
     var initialize = () => {
         fn.renderBrandsStored()
         Sb.events(['Render:catchDomAsync'], fn.catchDomAsync, this)
@@ -276,47 +323,7 @@ yOSON.AppCore.addModule('render', function(Sb){
     }
 
     return {
-        init : initialize
-    }
-})
-
-yOSON.AppCore.addModule('eraser', function(Sb) {
-    var st = {
-        btnDelete : '.btn_Delete' 
-    }
-    
-    var dom = {}
-
-    var catchDom = () => {
-        dom.btnDelete = $(st.btnDelete)
-    }
-
-    var suscribeEvents = () => {
-        dom.btnDelete.on('click', events.eraseStorageData)
-    }
-
-    var events = {
-        eraseStorageData(e){
-            var ele = $(e.target)
-            var id = ele.data("id")
-            Sb.trigger('Storage:erase', "dataBrands", id)
-            Sb.trigger('Render:renderBrandsStored')
-        }
-    }
-    var fn ={
-        async(){
-            catchDom()
-            suscribeEvents()
-        }
-    }
-    var initialize = () => {
-        catchDom()
-        suscribeEvents()
-        Sb.events(['Eraser:eraseStorage'], fn.async, this)
-    }
-
-    return {
-        init : initialize
+        init: initialize
     }
 })
 
@@ -357,9 +364,9 @@ yOSON.AppCore.addModule('storage', function (Sb) {
     }
 })
 
+
 yOSON.AppCore.runModule('adder')
 yOSON.AppCore.runModule('filter')
 yOSON.AppCore.runModule('render')
-yOSON.AppCore.runModule('eraser')
 yOSON.AppCore.runModule('storage')
 
