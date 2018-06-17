@@ -1,0 +1,44 @@
+extends ./../layout.pug
+
+block styles
+    link(rel='stylesheet', type='text/css', href='../../css/c-persona-natural.css')
+    link(href='https://fonts.googleapis.com/css?family=Ubuntu', rel='stylesheet')
+
+block content
+    section.announcement-container
+        .center-box
+            form.form-announcement-simple
+                .announcement-header
+                    h2.form-announcement__title SIMPLE
+                    span.form-announcement__price S/.   25
+                    span.form-announcement__impost CON IGV
+                    span
+                        a.form-announcement__button SELECCIONAR
+                    span
+                        a.form-announcement__example(href='#') Ver ejemplo
+                .announcement-content
+                    ul.announcement-features
+                        li Vigencia 
+                            strong 15 dias
+                        li 
+                            strong Baja prioridad 
+                            | en resultados
+                        li 
+                            strong Foto standard 
+                            | en listado
+                        li 
+                            strong 10 fotos 
+                            | en ficha
+                        li Video de 
+                            strong Youtube
+                        li -
+                        li -
+                        li -
+                        li -
+                        li -
+                        li -
+                        li -
+                    span
+                        a.form-announcement__button SELECCIONAR
+
+block scripts
